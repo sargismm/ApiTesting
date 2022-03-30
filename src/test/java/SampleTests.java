@@ -1,6 +1,7 @@
 import io.qameta.allure.Description;
 import models.User;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
@@ -12,7 +13,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class SampleTests {
+@Listeners(AllureListener.class)
+public class SampleTests extends BaseTests {
     ApiClientUtils apiClientUtils = new ApiClientUtils();
     private static final Logger logger = Logger.getLogger(SampleTests.class);
     private String userId;
