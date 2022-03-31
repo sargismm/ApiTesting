@@ -16,8 +16,12 @@ public interface IApiClient {
     Call<Map<String, String>> getUserDetail(@Header("Authorization") String token, @Path("userId") String userId);
 
     @POST("public/v2/users")
-    Call<Map<String, String>> createUser(@Header("Authorization") String token, @Body User user);
+    Call<User> createUser(@Header("Authorization") String token, @Body User user);
 
     @DELETE("public/v2/users/{userId}")
     Call<Void> deleteUser(@Header("Authorization") String token, @Path("userId") String userId);
+
+    @PUT("public/v2/users/{userId}")
+    Call<User> updateUser(@Header("Authorization") String token, @Path("userId") String userId, @Body User user);
+
 }

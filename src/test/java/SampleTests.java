@@ -10,6 +10,7 @@ import utils.ApiClientUtils;
 import utils.Constants;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,39 +20,86 @@ public class SampleTests extends BaseTests {
     private static final Logger logger = Logger.getLogger(SampleTests.class);
     private String userId;
     private final String token = Constants.TOKEN.value;
+    private User user = new User();
 
     @Test(priority = 1)
     @Description("Getting all the users to verify that API is working")
     public void getUsers() throws IOException {
+        logger.info("Getting all users list");
         Response<List<Map<String, String>>> response = apiClientUtils.getApiClient().getUsers(token).execute();
-        Assert.assertNotNull(response.body());
-        Assert.assertEquals(response.code(), 200);
+        Assert.assertNotNull(response.body(), "Error: Body is null");
+        Assert.assertEquals(response.code(), 200, "Error: Invalid response code, users not found");
+        logger.info("Test finished");
     }
 
     @Parameters(value = {"name", "email", "gender", "status"})
     @Test(priority = 2)
+    @Description("Creating a new user")
     public void createUser(String name, String email, String gender, String status) throws IOException {
-        User user = new User();
+        logger.info("Setting user info");
         user.setEmail(email);
         user.setGender(gender);
         user.setName(name);
         user.setStatus(status);
-        Response<Map<String, String>> response = apiClientUtils.getApiClient().createUser(token, user).execute();
-        Assert.assertNotNull(response.body());
-        Assert.assertEquals(response.code(), 201);
-        userId = response.body().get("id");
+        logger.info("Creating a user");
+        Response<User> response = apiClientUtils.getApiClient().createUser(token, user).execute();
+        Assert.assertNotNull(response.body(), "Error: Body is null");
+        Assert.assertEquals(response.code(), 201, "Error: Invalid response code, user is not created");
+        userId = response.body().getId();
+        logger.info("Test finished");
     }
 
-    @Test(priority = 3)
+    @Test(priority = 3, dependsOnMethods = "createUser")
+    @Description("Getting user by ID")
     public void getUserById() throws IOException {
+        logger.info("Getting created user by ID");
         Response<Map<String, String>> response = apiClientUtils.getApiClient().getUserDetail(token, userId).execute();
-        Assert.assertNotNull(response.body());
-        Assert.assertEquals(response.code(), 200);
+        Assert.assertNotNull(response.body(), "Error: Body is null");
+        Assert.assertEquals(response.code(), 200, "Error: Invalid response code, user id not found");
+        logger.info("Test finished");
     }
 
-    @Test(priority = 4)
+    @Test(priority = 4, dependsOnMethods = "createUser")
+    @Description("Updating user info")
+    public void updateUser() throws IOException {
+        logger.info("Setting user status to inactive");
+        user.setStatus("inactive");
+        Response<User> response = apiClientUtils.getApiClient().updateUser(token, userId, user).execute();
+        Assert.assertNotNull(response.body(), "Error: Body is null");
+        Assert.assertEquals(response.code(), 200, "Error: Invalid response code, user is not updated");
+        Assert.assertEquals(response.body().getStatus(), "inactive", "Status is not updated");
+        logger.info("Test finished");
+    }
+
+    @Test(priority = 5, dependsOnMethods = "createUser")
+    @Description("Deleting the user by ID")
     public void deleteUser() throws IOException {
+        logger.info("Removing the user");
         Response<Void> response = apiClientUtils.getApiClient().deleteUser(token, userId).execute();
-        Assert.assertEquals(response.code(), 204);
+        Assert.assertEquals(response.code(), 204, "Error: Invalid response code, user is not deleted");
+        logger.info("Test finished");
+    }
+
+    @Test(priority = 6)
+    @Description("Negative test: creating user")
+    public void negCreateUser() throws IOException {
+        logger.info("Creating a user with null user");
+        user = null;
+        try {
+            apiClientUtils.getApiClient().createUser(token, user).execute();
+        } catch (Exception e) {
+            logger.error(e);
+            String errorLog = Arrays.toString(e.getStackTrace());
+            String result = errorLog.substring(1, errorLog.length() - 1);
+            AllureListener.saveTextLog(result);
+            throw e;
+        }
+        logger.info("Negative test finished");
+    }
+
+    @Test(priority = 7, dependsOnMethods = "negCreateUser")
+    @Description("This test will get skipped because user was not created")
+    public void negGetUser() {
+        logger.warn("SKIPPED TEST");
     }
 }
