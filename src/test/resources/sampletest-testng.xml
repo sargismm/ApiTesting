@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="ApiTesting" preserve-order="true">
+<suite name="ApiTesting">
 
     <parameter name="name" value="Paron Paronyan"/>
     <parameter name="email" value="paron@mama.jan"/>
     <parameter name="gender" value="female"/>
     <parameter name="status" value="active"/>
 
-    <test name="ApiTests" preserve-order="true">
+    <test name="ApiTests">
         <classes>
-            <class name="SampleTests"/>
+            <class name="SimpleTests"/>
+            <class name="NestedTests"/>
         </classes>
     </test>
 </suite>

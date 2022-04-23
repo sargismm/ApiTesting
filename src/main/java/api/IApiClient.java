@@ -1,5 +1,6 @@
 package api;
 
+import models.Post;
 import models.User;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -24,4 +25,9 @@ public interface IApiClient {
     @PUT("public/v2/users/{userId}")
     Call<User> updateUser(@Header("Authorization") String token, @Path("userId") String userId, @Body User user);
 
+    @POST("public/v2/users/{userId}/posts")
+    Call<Post> createPost(@Header("Authorization") String token, @Path("userId") String userId, @Body Post post);
+
+    @GET("public/v2/users/{userId}/posts")
+    Call<List<Post>> getPost(@Header("Authorization") String token, @Path("userId") String userId);
 }

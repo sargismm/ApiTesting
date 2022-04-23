@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Listeners(AllureListener.class)
-public class SampleTests extends BaseTests {
+public class SimpleTests extends BaseTests {
+
     ApiClientUtils apiClientUtils = new ApiClientUtils();
-    private static final Logger logger = Logger.getLogger(SampleTests.class);
+    private static final Logger logger = Logger.getLogger(SimpleTests.class);
     private String userId;
     private final String token = Constants.TOKEN.value;
     private User user = new User();
@@ -80,9 +81,16 @@ public class SampleTests extends BaseTests {
         logger.info("Test finished");
     }
 
+    /**
+     * Example of a test that depends on another test.
+     * In this case user is not created, thus it is impossible to get user ID.
+     * To avoid wasting time and resources, it is skipped.
+     * @throws IOException
+     */
+
     @Test(priority = 6)
-    @Description("Negative test: creating user")
-    public void negCreateUser() throws IOException {
+    @Description("Broken test: creating user")
+    public void brokenTestCreateUser() throws IOException {
         logger.info("Creating a user with null user");
         user = null;
         try {
@@ -97,7 +105,7 @@ public class SampleTests extends BaseTests {
         logger.info("Negative test finished");
     }
 
-    @Test(priority = 7, dependsOnMethods = "negCreateUser")
+    @Test(priority = 7, dependsOnMethods = "brokenTestCreateUser")
     @Description("This test will get skipped because user was not created")
     public void negGetUser() {
         logger.warn("SKIPPED TEST");
