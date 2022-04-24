@@ -11,6 +11,7 @@
         <classes>
             <class name="SimpleTests"/>
             <class name="NestedTests"/>
+            <class name="FailingTests"/>
         </classes>
     </test>
 </suite>

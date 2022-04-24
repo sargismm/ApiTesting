@@ -10,7 +10,6 @@ import utils.ApiClientUtils;
 import utils.Constants;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class SimpleTests extends BaseTests {
     private static final Logger logger = Logger.getLogger(SimpleTests.class);
     private String userId;
     private final String token = Constants.TOKEN.value;
-    private User user = new User();
+    private final User user = new User();
 
     @Test(priority = 1)
     @Description("Getting all the users to verify that API is working")
@@ -79,35 +78,5 @@ public class SimpleTests extends BaseTests {
         Response<Void> response = apiClientUtils.getApiClient().deleteUser(token, userId).execute();
         Assert.assertEquals(response.code(), 204, "Error: Invalid response code, user is not deleted");
         logger.info("Test finished");
-    }
-
-    /**
-     * Example of a test that depends on another test.
-     * In this case user is not created, thus it is impossible to get user ID.
-     * To avoid wasting time and resources, it is skipped.
-     * @throws IOException
-     */
-
-    @Test(priority = 6)
-    @Description("Broken test: creating user")
-    public void brokenTestCreateUser() throws IOException {
-        logger.info("Creating a user with null user");
-        user = null;
-        try {
-            apiClientUtils.getApiClient().createUser(token, user).execute();
-        } catch (Exception e) {
-            logger.error(e);
-            String errorLog = Arrays.toString(e.getStackTrace());
-            String result = errorLog.substring(1, errorLog.length() - 1);
-            AllureListener.saveTextLog(result);
-            throw e;
-        }
-        logger.info("Negative test finished");
-    }
-
-    @Test(priority = 7, dependsOnMethods = "brokenTestCreateUser")
-    @Description("This test will get skipped because user was not created")
-    public void negGetUser() {
-        logger.warn("SKIPPED TEST");
     }
 }

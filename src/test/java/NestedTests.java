@@ -1,5 +1,7 @@
 import io.qameta.allure.Description;
+import models.Comment;
 import models.Post;
+import models.Todos;
 import models.User;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -20,8 +22,11 @@ public class NestedTests extends BaseTests {
     private final String token = Constants.TOKEN.value;
     private String userId;
     private int postId;
+    private int todoId;
     private final User user = new User();
     private final Post post = new Post();
+    private final Comment comment = new Comment();
+    Todos todo;
 
     @BeforeClass
     private void createUser() throws IOException {
@@ -58,7 +63,7 @@ public class NestedTests extends BaseTests {
         logger.info("Test finished");
     }
 
-    @Test(priority = 2)
+    @Test(priority = 2, dependsOnMethods = "createPost")
     @Description("Getting the post")
     public void getPost() throws IOException {
         logger.info("Getting the post");
@@ -67,13 +72,80 @@ public class NestedTests extends BaseTests {
         Assert.assertEquals(response.code(), 200, "Error: Invalid response code, could not get the posts");
         List<Integer> idList = response.body().stream().map(Post::getId).collect(Collectors.toList());
         int index;
-        for (index = 0; index < idList.size(); index++){
-            if (postId == idList.get(index))
+        for (index = 0; index < idList.size(); index++) {
+            if (postId == idList.get(index)) {
+                post.setId(postId);
                 break;
+            }
         }
 
         Assert.assertEquals(response.body().get(index).getTitle(), post.getTitle(), "Post title is invalid");
         Assert.assertEquals(response.body().get(index).getBody(), post.getBody(), "Post body is invalid");
         logger.info("Test finished");
+    }
+
+    @Test(priority = 3)
+    @Description("Creating a post comment")
+    public void createComment() throws IOException {
+        logger.info("Creating a post comment");
+        comment.setPost_id(post.getId());
+        comment.setName(user.getName());
+        comment.setEmail(user.getEmail());
+        comment.setBody("This is comment body");
+        Response<Comment> response = apiClientUtils.getApiClient().createComment(token, comment).execute();
+        Assert.assertEquals(response.code(), 201, "Error: Invalid response code, comment is not created");
+        Assert.assertNotNull(response.body(), "Error: Comment body is null");
+        Assert.assertEquals(response.body().getBody(), comment.getBody(), "Post comment is invalid");
+    }
+
+    @Test(priority = 4, dependsOnMethods = "createComment")
+    @Description("Getting post comment")
+    public void getComment() throws IOException {
+        logger.info("Getting a post comment");
+        Response<List<Comment>> response = apiClientUtils.getApiClient().getComment(token, post.getId()).execute();
+        Assert.assertEquals(response.code(), 200, "Error: Invalid response code, comment does not exist");
+        Assert.assertNotNull(response.body(), "Error: Comment body is null");
+
+        List<Integer> idList = response.body().stream().map(Comment::getPost_id).collect(Collectors.toList());
+        int index;
+        for (index = 0; index < idList.size(); index++) {
+            if (postId == idList.get(index)) {
+                post.setId(postId);
+                break;
+            }
+        }
+
+        Assert.assertEquals(response.body().get(index).getName(), comment.getName(), "Error: Comment name does not match");
+        Assert.assertEquals(response.body().get(index).getEmail(), comment.getEmail(), "Error: Comment email does not match");
+    }
+
+    @Test(priority = 5)
+    @Description("Creating a user todo")
+    public void createTodo() throws IOException {
+        todo = new Todos("Todo title", "2022-12-31T00:00:00.000+05:30", "pending");
+        Response<Todos> response = apiClientUtils.getApiClient().createUserTodo(token, userId, todo).execute();
+        Assert.assertEquals(response.code(), 201, "Error: Invalid response code, todos is not created");
+        Assert.assertNotNull(response.body(), "Error: Todos body is null");
+        Assert.assertEquals(response.body().getTitle(), todo.getTitle(), "Todo title is invalid");
+        todoId = response.body().getId();
+    }
+
+    @Test(priority = 6, dependsOnMethods = "createTodo")
+    @Description("Getting a user todo")
+    public void getTodo() throws IOException {
+        logger.info("Getting a user todo");
+        Response<List<Todos>> response = apiClientUtils.getApiClient().getTodo(token, userId).execute();
+        Assert.assertEquals(response.code(), 200, "Error: Invalid response code, todo does not exist");
+        Assert.assertNotNull(response.body(), "Error: Todo body is null");
+        List<Integer> idList = response.body().stream().map(Todos::getId).collect(Collectors.toList());
+        int index;
+        for (index = 0; index < idList.size(); index++) {
+            if (todoId == idList.get(index)) {
+                todo.setId(todoId);
+                break;
+            }
+        }
+        Assert.assertEquals(response.body().get(index).getTitle(), todo.getTitle(), "Error: Todo title does not match");
+        Assert.assertEquals(response.body().get(index).getStatus(), todo.getStatus(), "Error: Todo status does not match");
     }
 }

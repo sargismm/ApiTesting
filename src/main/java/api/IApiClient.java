@@ -1,6 +1,8 @@
 package api;
 
+import models.Comment;
 import models.Post;
+import models.Todos;
 import models.User;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -30,4 +32,17 @@ public interface IApiClient {
 
     @GET("public/v2/users/{userId}/posts")
     Call<List<Post>> getPost(@Header("Authorization") String token, @Path("userId") String userId);
+
+    @POST("public/v2/comments")
+    Call<Comment> createComment(@Header("Authorization") String token, @Body Comment comment);
+
+    @GET("public/v2/posts/{postId}/comments")
+    Call<List<Comment>> getComment(@Header("Authorization") String token, @Path("postId") int postId);
+
+    @POST("public/v2/users/{userId}/todos")
+    Call<Todos> createUserTodo(@Header("Authorization") String token, @Path("userId") String userId, @Body Todos todos);
+
+    @GET("public/v2/users/{userId}/todos")
+    Call<List<Todos>> getTodo(@Header("Authorization") String token, @Path("userId") String userId);
+
 }
