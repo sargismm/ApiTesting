@@ -11,6 +11,11 @@
         <classes>
             <class name="SimpleTests"/>
             <class name="NestedTests"/>
+            <class name="NegativeTests"/>
+        </classes>
+    </test>
+    <test name="FailingTestExamples" enabled="false">
+        <classes>
             <class name="FailingTests"/>
         </classes>
     </test>

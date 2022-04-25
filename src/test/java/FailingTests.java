@@ -1,13 +1,17 @@
 import io.qameta.allure.Description;
+import models.Post;
 import models.User;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
+import retrofit2.Response;
 import utils.ApiClientUtils;
 import utils.Constants;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class FailingTests {
     ApiClientUtils apiClientUtils = new ApiClientUtils();
@@ -50,5 +54,16 @@ public class FailingTests {
     @Description("This test will get skipped because user was not created")
     public void skippedGetUser() {
         logger.warn("SKIPPED TEST");
+    }
+
+    @Test(priority = 3, enabled = false)
+    @Description("Getting a post for a user that does not exist")
+    public void getPostForInvalidUser() throws IOException {
+        logger.info("Getting a post for a user that does not exist");
+        Response<List<Post>> response = apiClientUtils.getApiClient().getPost(token, "invalidId").execute();
+        Assert.assertNotNull(response.errorBody(), "Error: Body is null");
+        Assert.assertEquals(response.code(), 404, "Error: Invalid response code, could not get the posts");
+
+        logger.info("Test finished");
     }
 }

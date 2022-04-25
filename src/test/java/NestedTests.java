@@ -26,7 +26,7 @@ public class NestedTests extends BaseTests {
     private final User user = new User();
     private final Post post = new Post();
     private final Comment comment = new Comment();
-    Todos todo;
+    private Todos todo;
 
     @BeforeClass
     private void before() throws IOException {
