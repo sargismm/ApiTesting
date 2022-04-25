@@ -1,6 +1,8 @@
 import io.qameta.allure.Description;
 import models.User;
+import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -21,6 +23,13 @@ public class SimpleTests extends BaseTests {
     private String userId;
     private final String token = Constants.TOKEN.value;
     private final User user = new User();
+
+    @BeforeClass
+    public void before() {
+        logger.info("\n==============================================================" +
+                "\nSIMPLE TESTS\n" +
+                "==============================================================");
+    }
 
     @Test(priority = 1)
     @Description("Getting all the users to verify that API is working")

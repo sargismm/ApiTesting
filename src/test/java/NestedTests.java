@@ -29,7 +29,10 @@ public class NestedTests extends BaseTests {
     Todos todo;
 
     @BeforeClass
-    private void createUser() throws IOException {
+    private void before() throws IOException {
+        logger.info("\n==============================================================" +
+                "\nNESTED TESTS\n" +
+                "==============================================================");
         logger.info("Creating a user");
         user.setName("Sargis Sargsyan");
         user.setEmail("ssargsyan@testing.org");

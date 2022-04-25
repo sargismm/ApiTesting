@@ -1,5 +1,6 @@
 import io.qameta.allure.Description;
 import models.User;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 import utils.ApiClientUtils;
@@ -13,6 +14,13 @@ public class FailingTests {
     private static final Logger logger = Logger.getLogger(FailingTests.class);
     private final String token = Constants.TOKEN.value;
     private User user = new User();
+
+    @BeforeClass
+    public void before() {
+        logger.info("\n==============================================================" +
+                "\nFAILING TESTS" +
+                "\n==============================================================");
+    }
 
     /**
      * Example of a test that depends on another test.
