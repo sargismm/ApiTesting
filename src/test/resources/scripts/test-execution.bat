@@ -1,0 +1,1 @@
+mvn clean test -Dsurefire.suiteXmlFile=/src/test/resource/sampletest-testng.xml

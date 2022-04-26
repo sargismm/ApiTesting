@@ -14,7 +14,7 @@
             <class name="NegativeTests"/>
         </classes>
     </test>
-    <test name="FailingTestExamples" enabled="false">
+    <test name="FailingTestExamples">
         <classes>
             <class name="FailingTests"/>
         </classes>

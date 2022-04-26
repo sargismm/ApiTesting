@@ -33,7 +33,7 @@ public class FailingTests {
      * @throws IOException
      */
 
-    @Test(priority = 1)
+    @Test(priority = 1, enabled = false)
     @Description("Broken test: creating user")
     public void brokenTestCreateUser() throws IOException {
         logger.info("Creating a user with null user");
@@ -50,7 +50,7 @@ public class FailingTests {
         logger.info("Negative test finished");
     }
 
-    @Test(priority = 2, dependsOnMethods = "brokenTestCreateUser")
+    @Test(priority = 2, dependsOnMethods = "brokenTestCreateUser", enabled = false)
     @Description("This test will get skipped because user was not created")
     public void skippedGetUser() {
         logger.warn("SKIPPED TEST");
