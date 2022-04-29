@@ -24,11 +24,11 @@ public class BaseTests {
         String userId;
         if (response.body().get(0).get("email").equals(email)) {
             userId = response.body().get(0).get("id");
-            apiClientUtils.getApiClient().deleteUser(token, userId);
+            apiClientUtils.getApiClient().deleteUser(token, userId).execute();
         }
         if (response.body().get(0).get("email").equals("ssargsyan@testing.org")) {
             userId = response.body().get(0).get("id");
-            apiClientUtils.getApiClient().deleteUser(token, userId);
+            apiClientUtils.getApiClient().deleteUser(token, userId).execute();
         }
     }
 }
