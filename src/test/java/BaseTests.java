@@ -1,8 +1,6 @@
-import models.User;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Parameters;
-import org.testng.log4testng.Logger;
 import retrofit2.Response;
 import utils.ApiClientUtils;
 import utils.Constants;
@@ -13,7 +11,7 @@ import java.util.Map;
 
 public class BaseTests {
     ApiClientUtils apiClientUtils = new ApiClientUtils();
-    private final String token = Constants.TOKEN.value;
+    public final String token = Constants.TOKEN.value;
 
     @AfterSuite
     @Parameters(value = {"email"})

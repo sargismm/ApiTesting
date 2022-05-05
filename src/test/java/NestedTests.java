@@ -9,17 +9,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 import retrofit2.Response;
-import utils.ApiClientUtils;
-import utils.Constants;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class NestedTests extends BaseTests {
-    ApiClientUtils apiClientUtils = new ApiClientUtils();
     private static final Logger logger = Logger.getLogger(NestedTests.class);
-    private final String token = Constants.TOKEN.value;
     private String userId;
     private int postId;
     private int todoId;
